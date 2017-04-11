@@ -47,7 +47,7 @@ describe Idv::PhoneStep do
       expect(step.submit).to eq result
       expect(idv_session.phone_confirmation).to eq true
       expect(idv_session.params).to eq idv_phone_form.idv_params
-      expect(idv_session.applicant.phone).to eq idv_phone_form.phone
+      expect(idv_session.applicant_phone).to eq idv_phone_form.phone
     end
 
     it 'returns false for mock-sad phone' do

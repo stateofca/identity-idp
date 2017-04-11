@@ -5,7 +5,7 @@ describe SessionEncryptor do
     it 'decrypts encrypted session' do
       session = SessionEncryptor.dump(foo: 'bar')
 
-      expect(SessionEncryptor.load(session)).to eq(foo: 'bar')
+      expect(SessionEncryptor.load(session)).to eq('foo' => 'bar')
     end
   end
 

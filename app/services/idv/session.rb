@@ -3,7 +3,9 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
+      applicant_phone
       financials_confirmation
+      normalized_applicant_params
       params
       phone_confirmation
       pii
@@ -11,8 +13,10 @@ module Idv
       profile_id
       personal_key
       resolution
+      resolution_successful
       step_attempts
       vendor
+      vendor_session_id
     ].freeze
 
     def initialize(user_session, current_user)
@@ -37,13 +41,13 @@ module Idv
     end
 
     def proofing_started?
-      resolution.present? && applicant.present? && resolution.success?
+      resolution.present? && applicant.present? && resolution_successful
     end
 
     def cache_applicant_profile_id
       profile_maker = Idv::ProfileMaker.new(
         applicant: Proofer::Applicant.new(applicant_params),
-        normalized_applicant: resolution.vendor_resp.normalized_applicant,
+        normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
         user: current_user
       )
       profile = profile_maker.profile
@@ -57,8 +61,8 @@ module Idv
       cacher.save(password, profile)
     end
 
-    def applicant_from_params
-      Proofer::Applicant.new(applicant_params_ascii.merge(uuid: current_user.uuid))
+    def vendor_params
+      applicant_params_ascii.merge(uuid: current_user.uuid)
     end
 
     def profile

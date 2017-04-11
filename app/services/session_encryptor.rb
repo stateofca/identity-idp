@@ -8,15 +8,13 @@ class SessionEncryptor
     build_user_access_key
   end
 
-  # rubocop:disable Security/MarshalLoad
   def self.load(value)
     decrypted = encryptor.decrypt(value, user_access_key)
-    Marshal.load(::Base64.decode64(decrypted))
+    JSON.parse(decrypted, quirks_mode: true).with_indifferent_access
   end
-  # rubocop:enable Security/MarshalLoad
 
   def self.dump(value)
-    plain = ::Base64.encode64(Marshal.dump(value))
+    plain = JSON.generate(value, quirks_mode: true)
     encryptor.encrypt(plain, user_access_key)
   end
 
