@@ -70,7 +70,7 @@ module Verify
 
     def phone_confirmation_required?
       idv_params[:phone] != current_user.phone &&
-        idv_session.address_verification_mechanism == :phone
+        idv_session.address_verification_mechanism == 'phone'
     end
 
     def valid_password?

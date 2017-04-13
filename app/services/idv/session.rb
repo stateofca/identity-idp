@@ -75,7 +75,7 @@ module Idv
 
     def complete_session
       complete_profile if phone_confirmation == true
-      create_usps_entry if address_verification_mechanism == :usps
+      create_usps_entry if address_verification_mechanism == 'usps'
     end
 
     def complete_profile
@@ -95,7 +95,7 @@ module Idv
     end
 
     def address_mechanism_chosen?
-      phone_confirmation == true || address_verification_mechanism == :usps
+      phone_confirmation == true || address_verification_mechanism == 'usps'
     end
 
     private
