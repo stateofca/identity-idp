@@ -116,7 +116,7 @@ describe Verify::ConfirmationsController do
 
     context 'user picked USPS confirmation' do
       before do
-        subject.idv_session.address_verification_mechanism = :usps
+        subject.idv_session.address_verification_mechanism = 'usps'
       end
 
       it 'leaves profile deactivated' do

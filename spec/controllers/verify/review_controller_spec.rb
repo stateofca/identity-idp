@@ -228,7 +228,7 @@ describe Verify::ReviewController do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
         idv_session.applicant = idv_session.vendor_params
-        idv_session.address_verification_mechanism = :phone
+        idv_session.address_verification_mechanism = 'phone'
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
