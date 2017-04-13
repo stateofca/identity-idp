@@ -3,7 +3,6 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
-      applicant_phone
       financials_confirmation
       normalized_applicant_params
       params
