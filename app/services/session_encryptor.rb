@@ -1,5 +1,5 @@
 class SessionEncryptor
-  MARSHAL_SIGNATURE = 'BAh'.freeze
+  MARSHAL_SIGNATURE ||= 'BAh'.freeze
 
   def self.build_user_access_key
     key = Figaro.env.session_encryption_key
