@@ -132,7 +132,7 @@ feature 'IdV session' do
     end
 
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
-      _user = sign_in_and_2fa_user
+      user = sign_in_and_2fa_user
 
       visit verify_session_path
 
@@ -221,6 +221,7 @@ feature 'IdV session' do
 
       fill_out_phone_form_ok(good_phone_value)
       click_idv_continue
+      enter_correct_otp_code_for_user(user)
 
       page.find('.accordion').click
 

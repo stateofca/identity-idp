@@ -182,7 +182,7 @@ module TwoFactorAuthenticatable
 
   def after_otp_verification_confirmation_path
     if idv_context?
-      verify_confirmations_path
+      verify_review_path
     elsif after_otp_action_required?
       after_otp_action_path
     else

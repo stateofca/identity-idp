@@ -1,7 +1,6 @@
 module Verify
   class ReviewController < ApplicationController
     include IdvStepConcern
-    include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_current_password, only: [:create]
@@ -34,7 +33,7 @@ module Verify
 
     def create
       init_profile
-      redirect_to_next_step
+      redirect_to verify_confirmations_path
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
     end
 
@@ -68,21 +67,8 @@ module Verify
       idv_session.cache_encrypted_pii(current_user.user_access_key)
     end
 
-    def redirect_to_next_step
-      if phone_confirmation_required?
-        prompt_to_confirm_phone(phone: idv_params[:phone], context: 'idv')
-      else
-        redirect_to verify_confirmations_path
-      end
-    end
-
     def idv_params
       idv_session.params
-    end
-
-    def phone_confirmation_required?
-      idv_params[:phone] != current_user.phone &&
-        idv_session.address_verification_mechanism == 'phone'
     end
 
     def valid_password?

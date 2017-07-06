@@ -271,27 +271,5 @@ describe Verify::ReviewController do
         expect(pii.first_name.norm).to eq 'JOSE'
       end
     end
-
-    context 'user has entered different phone number from MFA' do
-      before do
-        idv_session.params = user_attrs.merge(phone: '213-555-1000')
-        idv_session.applicant = idv_session.vendor_params
-        idv_session.address_verification_mechanism = 'phone'
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-      end
-
-      it 'redirects to phone confirmation path' do
-        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
-
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
-        expect(subject.user_session[:context]).to eq 'idv'
-      end
-    end
   end
 end

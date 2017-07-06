@@ -24,12 +24,34 @@ describe Verify::PhoneController do
       stub_verify_steps_one_and_two(user)
     end
 
-    it 'redirects to review when step is complete' do
-      subject.idv_session.phone_confirmation = true
+    context 'when the phone number is the same as the user phone' do
+      before do
+        subject.idv_session.params = { phone: user.phone }
+      end
 
-      get :new
+      it 'redirects to review when step is complete' do
+        subject.idv_session.phone_confirmation = true
+        get :new
 
-      expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to verify_review_path
+      end
+    end
+
+    context 'when the phone number is different from the user phone' do
+      before do
+        subject.idv_session.params = { phone: bad_phone }
+      end
+
+      it 'redirects to phone confirmation' do
+        subject.idv_session.phone_confirmation = true
+        get :new
+
+        expect(response).to redirect_to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+          )
+        )
+      end
     end
 
     it 'redirects to fail when step attempts are exceeded' do
@@ -139,13 +161,17 @@ describe Verify::PhoneController do
       end
 
       context 'when different from user phone' do
-        it 'redirects to review page and does not set phone_confirmed_at' do
+        it 'redirects to phone confirmation path and does not set phone_confirmed_at' do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
           put :create, idv_phone_form: { phone: good_phone }
 
-          expect(response).to redirect_to verify_review_path
+          expect(response).to redirect_to(
+            otp_send_path(
+              otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+            )
+          )
 
           expected_params = {
             phone: good_phone,
