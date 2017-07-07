@@ -7,6 +7,7 @@ module Verify
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
     before_action :submit_idv_form, only: [:create]
+    before_action :submit_idv_job, only: [:create]
 
     def new
       @view_model = view_model
@@ -50,6 +51,14 @@ module Verify
       idv_session.params[:phone] != current_user.phone
     end
 
+    def submit_idv_job
+      SubmitIdvJob.new(
+        vendor_validator_class: Idv::PhoneValidator,
+        idv_session: idv_session,
+        vendor_params: idv_form.phone
+      ).call
+    end
+
     def step_name
       :phone
     end
@@ -58,7 +67,7 @@ module Verify
       @_step ||= Idv::PhoneStep.new(
         idv_session: idv_session,
         idv_form_params: idv_form.idv_params,
-        vendor_params: idv_form.phone
+        vendor_validator_result: vendor_validator_result
       )
     end
 

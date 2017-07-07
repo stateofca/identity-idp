@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
+  include LocaleHelper
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 
@@ -46,13 +47,15 @@ class ApplicationController < ActionController::Base
 
   def decorated_session
     @_decorated_session ||= DecoratedSession.new(
-      sp: current_sp, view_context: view_context, sp_session: sp_session
+      sp: current_sp,
+      view_context: view_context,
+      sp_session: sp_session,
+      service_provider_request: service_provider_request
     ).call
   end
 
   def default_url_options
-    active_locale = I18n.locale
-    { locale: active_locale == I18n.default_locale ? nil : active_locale }
+    { locale: locale_url_param }
   end
 
   private
@@ -79,9 +82,12 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_from_request_id
-    issuer = ServiceProviderRequest.from_uuid(params[:request_id]).issuer
-    sp = ServiceProvider.from_issuer(issuer)
+    sp = ServiceProvider.from_issuer(service_provider_request.issuer)
     sp if sp.is_a? ServiceProvider
+  end
+
+  def service_provider_request
+    @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
   end
 
   def after_sign_in_path_for(user)
