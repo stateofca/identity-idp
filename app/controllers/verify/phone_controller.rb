@@ -48,14 +48,20 @@ module Verify
     end
 
     def phone_confirmation_required?
-      idv_session.params[:phone] != current_user.phone
+      normalized_phone = idv_session.params[:phone]
+      return false if normalized_phone.blank?
+
+      formatted_phone = normalized_phone.phony_formatted(
+        format: :international, normalize: :US, spaces: ' '
+      )
+      formatted_phone != current_user.phone
     end
 
     def submit_idv_job
       SubmitIdvJob.new(
         vendor_validator_class: Idv::PhoneValidator,
         idv_session: idv_session,
-        vendor_params: idv_form.phone
+        vendor_params: idv_session.params[:phone]
       ).call
     end
 
