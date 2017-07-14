@@ -384,11 +384,11 @@ feature 'IdV session' do
       end
     end
 
-    scenario 'continue phone OTP verification after cancel' do
+    scenario 'cancelling phone OTP verification redirects to verification cancel' do
       allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
-
       different_phone = '555-555-9876'
-      user = sign_in_live_with_2fa
+
+      sign_in_and_2fa_user
       visit verify_session_path
 
       fill_out_idv_form_ok
@@ -398,21 +398,10 @@ feature 'IdV session' do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
-      fill_in :user_password, with: user_password
-      click_submit_default
 
       click_on t('links.cancel')
 
-      expect(current_path).to eq root_path
-
-      sign_in_live_with_2fa(user)
-
-      expect(page).to have_content('9876')
-      expect(page).to have_content(t('account.index.verification.instructions'))
-
-      enter_correct_otp_code_for_user(user)
-
-      expect(current_path).to eq account_path
+      expect(current_path).to eq verify_cancel_path
     end
   end
 

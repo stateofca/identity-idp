@@ -229,6 +229,7 @@ module TwoFactorAuthenticatable
   def phone_view_data
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
+      confirmation_for_idv: idv_context?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,

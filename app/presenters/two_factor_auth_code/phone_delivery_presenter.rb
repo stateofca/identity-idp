@@ -21,6 +21,8 @@ module TwoFactorAuthCode
     def cancel_link
       if confirmation_for_phone_change || reauthn
         account_path
+      elsif confirmation_for_idv
+        verify_cancel_path
       else
         sign_out_path
       end
@@ -34,7 +36,8 @@ module TwoFactorAuthCode
       :phone_number,
       :unconfirmed_phone,
       :otp_delivery_preference,
-      :confirmation_for_phone_change
+      :confirmation_for_phone_change,
+      :confirmation_for_idv
     )
 
     def phone_number_tag
