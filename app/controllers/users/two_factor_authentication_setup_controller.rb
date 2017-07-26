@@ -9,7 +9,6 @@ module Users
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
-      @unsupported_area_codes = PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 

@@ -53,8 +53,8 @@ describe Users::TwoFactorAuthenticationSetupController do
         patch(
           :set,
           user_phone_form: { phone: '703-555-0100',
-                                    otp_delivery_preference: 'voice',
-                                    international_code: 'US' }
+                             otp_delivery_preference: 'voice',
+                             international_code: 'US' }
         )
 
         expect(response).to redirect_to(

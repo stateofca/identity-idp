@@ -5,7 +5,7 @@ p.mt-tiny.mb0
   = t('devise.two_factor_authentication.otp_setup_html')
 = simple_form_for(@user_phone_form,
     html: { autocomplete: 'off', role: 'form' },
-    data: { unsupported_area_codes: @unsupported_area_codes,
+    data: { unsupported_area_codes: unsupported_area_codes,
       international_phone_form: true },
     method: :patch,
     url: phone_setup_path) do |f|
