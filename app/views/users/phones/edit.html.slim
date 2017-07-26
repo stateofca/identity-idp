@@ -2,7 +2,7 @@
 
 
 h1.h3.my0 = t('headings.edit_info.phone')
-= simple_form_for(@update_user_phone_form,
+= simple_form_for(@user_phone_form,
     html: { autocomplete: 'off', method: :put, role: 'form' },
     data: { unsupported_area_codes: @unsupported_area_codes,
       international_phone_form: true },
@@ -16,6 +16,6 @@ h1.h3.my0 = t('headings.edit_info.phone')
       = t('devise.two_factor_authentication.otp_phone_label_info')
   = f.input :phone, as: :tel, required: true, input_html: { class: 'phone', value: nil },
     label: false
-  = render 'users/shared/otp_delivery_preference_selection', form: 'update_user_phone_form'
+  = render 'users/shared/otp_delivery_preference_selection'
   = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'mt2'
 = render 'shared/cancel', link: account_path

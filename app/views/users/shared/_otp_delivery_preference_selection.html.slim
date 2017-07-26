@@ -3,12 +3,12 @@
     legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_delivery_preference.title')
     label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
       .radio
-        = radio_button_tag "#{form}[otp_delivery_preference]", :sms, checked: true
+        = radio_button_tag 'user_phone_form[otp_delivery_preference]', :sms, checked: true
         span.indicator
         = t('devise.two_factor_authentication.otp_delivery_preference.sms')
     label.btn-border.col-12.sm-col-5
       .radio
-        = radio_button_tag "#{form}[otp_delivery_preference]", :voice
+        = radio_button_tag 'user_phone_form[otp_delivery_preference]', :voice
         span.indicator
         = t('devise.two_factor_authentication.otp_delivery_preference.voice')
     p#otp_delivery_preference_instruction.mt1.mb0

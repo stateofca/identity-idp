@@ -54,7 +54,7 @@ feature 'Two Factor Authentication' do
 
         fill_in 'Phone', with: guam_phone
         phone_radio_button = page.find(
-          '#two_factor_setup_form_otp_delivery_preference_voice',
+          '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
         )
 
@@ -94,7 +94,7 @@ feature 'Two Factor Authentication' do
         select 'Turkey +90', from: 'International code'
         fill_in 'Phone', with: '555-555-5000'
         phone_radio_button = page.find(
-          '#two_factor_setup_form_otp_delivery_preference_voice',
+          '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
         )
 

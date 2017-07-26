@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserPhoneForm do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build(:user, :signed_up) }
   let(:params) do
     {
       phone: '555-555-5000',
@@ -34,12 +34,50 @@ describe UserPhoneForm do
   end
 
   describe '#submit' do
-    it 'does not update the user phone attribute'
+    context 'when phone is valid' do
+      it 'is valid' do
+        result = subject.submit(params)
 
-    it 'updates to user otp delivery preference if the phone is unset'
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
+
+      it 'include otp preference in the form response extra' do
+        result = subject.submit(params)
+
+        expect(result.extra).to eq(
+          otp_delivery_preference: params[:otp_delivery_preference]
+        )
+      end
+
+      it 'does not update the user phone attribute' do
+        user = create(:user)
+        subject = UserPhoneForm.new(user)
+        params[:phone] = '+1 504 444 1643'
+
+        subject.submit(params)
+
+        user.reload
+        expect(user.phone).to_not eq('+1 504 444 1643')
+      end
+    end
 
     context 'when otp_delivery_preference is voice and phone number does not support voice' do
-      it 'is invalid'
+      let(:guam_phone) { '671-555-5000' }
+      let(:params) do
+        {
+          phone: guam_phone,
+          international_code: 'US',
+          otp_delivery_preference: 'voice',
+        }
+      end
+
+      it 'is invalid' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+      end
     end
   end
 
