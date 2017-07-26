@@ -61,6 +61,16 @@ describe UserPhoneForm do
         user.reload
         expect(user.phone).to_not eq('+1 504 444 1643')
       end
+
+      it 'preserves the format of the submitted phone number if phone is invalid' do
+        params[:phone] = '555-555-5000'
+        params[:international_code] = 'MA'
+
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+        expect(subject.phone).to eq('555-555-5000')
+      end
     end
 
     context 'when otp_delivery_preference is voice and phone number does not support voice' do

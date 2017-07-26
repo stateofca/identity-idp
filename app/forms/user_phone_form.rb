@@ -13,16 +13,14 @@ class UserPhoneForm
   end
 
   def submit(params)
-    self.international_code = params[:international_code]
-    self.phone = PhoneFormatter.new.format(
-      params[:phone],
-      country_code: international_code
-    )
-    self.otp_delivery_preference = params[:otp_delivery_preference]
+    ingest_submitted_params(params)
 
-    update_otp_delivery_preference_for_user if otp_delivery_preference_changed?
+    success = valid?
 
-    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+    self.phone = submitted_phone unless success
+    update_otp_delivery_preference_for_user if otp_delivery_preference_changed? && success
+
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def phone_changed?
@@ -31,12 +29,22 @@ class UserPhoneForm
 
   private
 
-  attr_accessor :user
+  attr_accessor :user, :submitted_phone
 
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
     }
+  end
+
+  def ingest_submitted_params(params)
+    self.international_code = params[:international_code]
+    self.submitted_phone = params[:phone]
+    self.phone = PhoneFormatter.new.format(
+      params[:phone],
+      country_code: international_code
+    )
+    self.otp_delivery_preference = params[:otp_delivery_preference]
   end
 
   def otp_delivery_preference_changed?
